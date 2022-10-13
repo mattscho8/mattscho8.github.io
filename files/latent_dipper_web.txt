@@ -1,0 +1,148 @@
+library(rjags)
+library(lattice)
+setwd("~/Dropbox/manuscripts/js_ss") # the working directory should be set for the users machine
+
+############### The dipper data #####################
+# duse is the capture-history matrix
+duse = cbind(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+             c(1,1,1,1,0,0,0,1,0,0,1,0,1,0,1,0,0,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+             c(1,0,1,0,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,1,0,1,1,0,0,0,0,1,0,0,1,0,0,0,1,0,1,1,1,0,0,0,1,0,1,0,0,1,0,0,0,1,1,1,1,0,0,1,1,1,0,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+             c(1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,0,1,1,0,0,1,1,1,0,1,0,0,0,0,1,0,1,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+             c(0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,0,1,0,0,0,0,1,1,1,1,0,1,1,1,0,0,1,1,0,0,1,1,1,0,1,1,1,0,1,1,0,1,0,1,1,0,0,0,1,1,1,0,0,0,1,0,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+             c(0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,1,1,0,0,1,1,0,0,0,1,1,0,1,0,0,1,0,1,0,0,0,0,0,1,1,0,0,0,0,0,0,1,0,1,0,1,0,1,0,0,1,1,0,0,1,1,1,1,1,1,1,0,1,0,0,1,1,1,0,1,0,1,1,0,1,1,1,1,1,0,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+             c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,1,1,0,0,1,1,0,0,0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,1,1,0,0,1,1,1,0,1,1,1,0,0,0,0,0,0,1,0,0,0,0,1,0,0,1,0,1,0,0,1,0,0,0,1,0,0,1,1,1,1,0,1,1,0,0,0,0,1,1,0,0,1,0,0,1,1,1,1,1,0,0,1,0,0,0,1,1,1,0,1,1,0,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1))
+n = nrow(duse) # number of observed samples
+k = ncol(duse) # number of sampling occasions
+bigR = colSums(duse) # bigR[i] is the number of individuals released after sample i
+k = length(bigR) # the number of sampling occasions
+mij = matrix(0,k-1,k) # mij[i,j] is the number of individuals last caught in sample i, next caught in j
+u = rep(0,k) # u gives the number of previously uncaught individuals
+u[1] = bigR[1]
+for(i in 1:n){
+  for(j in 2:k){
+    if(duse[i,j]==1){ # capture
+      if(sum(duse[i,1:(j-1)])==0){ # first capture
+        u[j] = u[j] + 1
+      } else { # prev capture
+        lastcap = max(which(duse[i,1:(j-1)]==1))
+        mij[lastcap,j] = mij[lastcap,j]+1
+      }
+    }
+  }
+}
+################ End of dipper data ##################
+
+#### function for getting initial values given a true 'alive/dead matrix'
+getinit = function(xmat,ause){
+  ## requires the variable a to be a list
+  if(class(ause)!="list"){
+    stop('The input a must be a list')
+  }
+  k = ncol(xmat)
+  nval = length(ause)
+  toret = vector('list',nval) # list to return
+  for(h in 1:nval){
+    xuse = rbind(xmat,matrix(0,nrow(ause[[h]])-nrow(xmat),k))
+    bigu = rep(NA,k) # Initializes the number of uncaught individuals
+    bigb = rep(NA,k-1) # does not include B0 (number of births)
+    bigu[1] = sum(ause[[h]][,1])
+    bigu[2] = sum(ause[[h]][xuse[,1]==0,2])
+    for(i in 3:k){
+      bigu[i] = sum(ause[[h]][rowSums(xuse[,1:(i-1)])==0,i])
+    }
+    for(i in 1:(k-1)){
+      bigb[i] = sum((ause[[h]][,i+1]-ause[[h]][,i])*ause[[h]][,i+1])
+    }
+    
+    bigm = matrix(NA,k-1,k)
+    for(i in 1:(k-1)){
+      for(j in (i+1):k){
+        # Find animals caught at i
+        cai = which(xuse[,i]==1)
+        # Find animals not caught between i and j
+        if((i+1)<(j-1)){ # there is more than one period between with which they can be caught
+          ntc = which(rowSums(xuse[cai,(i+1):(j-1)])==0)
+          bigm[i,j] = sum(ause[[h]][cai[ntc],j])
+        } else if((i+1)==(j-1)) { # there is exactly one period in which it can be caught 
+          ntc = which(xuse[cai,i+1]==0)
+          bigm[i,j] = sum(ause[[h]][cai[ntc],j])
+        } else { # there are no periods in between i and j
+          bigm[i,j] = sum(ause[[h]][cai,j])
+        }
+      }
+    }
+    toret[[h]] = list(bigm = bigm, bigu = c(bigu[1],rep(NA,k-1)), uminb = c(NA,bigu[2:k]-bigb), bigbp1 = bigb+1)
+  }
+  return(toret)
+}
+
+
+### The latent model of Jolly
+mod = '
+model{
+
+
+####### observation process ###########
+for(j in 1:k){
+  u[j] ~ dbin(p[j],bigu[j])
+}
+
+
+for(i in 1:(k-1)){
+  for(j in (i+1):k){
+    m[i,j] ~ dbin(p[j],bigm[i,j])
+  }
+}
+
+####### state process #############
+for(j in 1:k-1){
+  uminb[j+1] ~ dbin(phi[j],bigu[j]-u[j]) # model for U[j+1] - B[j]
+  bigu[j+1] <- uminb[j+1] + bigb[j] # finding U[j+1]
+}
+
+for(i in 1:k-2){
+  for(j in i+1:k-1){
+    bigm[i,j+1] ~ dbin(phi[j],bigm[i,j]-m[i,j])
+  }
+}
+
+for(j in 1:k-1){
+  bigm[j,j+1] ~ dbin(phi[j],bigR[j])
+}
+
+####### priors #################
+for(j in 1:k-1){
+  bigbp1[j] ~ dcat(pb[1:1000]) # p1 = plus 1.  Support of dcat is from 1 to N.  pb is specified as data
+  bigb[j] <- bigbp1[j] - 1
+  phi[j] ~ dbeta(1,1)
+}
+
+for(j in 1:k){
+  p[j] ~ dbeta(1,1) # prior distribution for p[j]
+}
+
+bigu[1] ~ dcat(pu[1:1000]) # pu is specified as data
+
+}
+'
+
+cat(mod,file='mod.txt')
+
+### Find initial values
+### Three scenarios:
+# 1. Every individual was alive in every sample.  There are no unobserved animals.
+# 2. Every individual was born immediately before the first capture and died immediately after the last capture.  There are no unobserved animals.
+# 3. The same as 2 but there are 30 unobserved animals who were alive for the entire study.
+a1 = matrix(1,n,k)
+a2 = matrix(0,n,k)
+for(i in 1:n){
+  tmp = which(duse[i,1:k]==1)
+  a2[i,min(tmp):max(tmp)] = 1
+}
+a3 = rbind(a2,matrix(1,30,k))
+atrue = list(a1,a2,a3) #list(a1,a2,a3)
+inituse = getinit(duse,atrue)
+
+m1 = jags.model('mod.txt',data=list(m = mij,bigR = bigR,u = u, k=k,pb = 1/(1:1000),pu = 1/(1:1000)), inits = inituse, n.chains=3, n.adapt = 1000)
+out1 = coda.samples(m1,c('bigb','phi','p'),n.iter=50000)
+summary(out1)
