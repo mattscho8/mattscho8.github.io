@@ -10,7 +10,7 @@ redirect_from:
 
 I am an applied statistician at the University of Otago.  My research interests are broad but generally involve applications in the biological sciences.  Much of my work has been in the field of statistical ecology, but I also work in areas such as environmental and earth sciences, biomechanics, physiology, genetics, and diagnostic testing.  I typically work with data that vary in space and time.
 
-You can find a list of publications on <u><a href="{{author.googlescholar}}">my Google Scholar profile</a>.</u>
+You can find a list of publications on [my Google Scholar profile](https://scholar.google.com/citations?user=8B9cr68AAAAJ&hl=en).
 
 From 2023 I will be Co-Editor of [_Biometrics_](https://onlinelibrary.wiley.com/journal/15410420).  
 
