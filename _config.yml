@@ -82,7 +82,7 @@ analytics:
 author:
   name             : "Matthew Schofield"
   avatar           : "profile.png"
-  bio              : "Associate Professor\n Department of Mathematics and Statistics\n University of Otago"
+  bio              : "Associate Professor\ University of Otago"
   location         : "Dunedin, NZ"
   employer         :
   pubmed           : 
