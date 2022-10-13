@@ -82,10 +82,8 @@ analytics:
 author:
   name             : "Matthew Schofield"
   avatar           : "profile.png"
-  bio              : |
-                      Associate Professor, 
-                      University of Otago
-  location         : "Dunedin, NZ"
+  bio              : "University of Otago"
+  location         : "Dunedin, Aotearoa, NZ"
   employer         :
   pubmed           : 
   googlescholar    : "https://scholar.google.com/citations?user=8B9cr68AAAAJ&hl=en"
