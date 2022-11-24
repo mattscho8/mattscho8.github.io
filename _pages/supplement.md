@@ -10,6 +10,9 @@ This page makes available several files.  Most of these are supplementary files 
 ### PhD Thesis
 - [Hierarchical Capture-Recapture Models](/files/PhDThesisrevised.pdf)
 
+### Estimating population size: the importance of model and estimator choice
+- [Humpback whale data](/files/humpback_data.txt)
+
 ### Continuous-time capture-recapture in closed populations
 - [ctime R package](/files/ctime_0.5.tar.gz)
 
