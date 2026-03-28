@@ -12,7 +12,7 @@ I am an applied statistician at the University of Otago.  My research interests 
 
 You can find a list of publications on [my Google Scholar profile](https://scholar.google.com/citations?user=8B9cr68AAAAJ&hl=en).
 
-From 2026 I am the Head of the [Department of Mathematics and Statistics](https://www.otago.ac.nz/maths-and-stats) 
+From 2026 I am the Head of the [Department of Mathematics and Statistics](https://www.otago.ac.nz/maths-and-stats) at the University of Otago, New Zealand.
 
 I was Co-Editor of [_Biometrics_](https://academic.oup.com/biometrics) between 2023 -- 2025.  
 
